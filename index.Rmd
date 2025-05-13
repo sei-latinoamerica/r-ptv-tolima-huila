@@ -1,0 +1,621 @@
+---
+title: "Región Tolima-Huila"
+author: "SEI Latam"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+---
+
+```{r setup, include=FALSE}
+library(sf)
+library(highcharter)
+library(flexdashboard)
+library(jsonlite)
+library(dplyr)
+library(tidyr)
+
+thm <- 
+  hc_theme(
+    colors = c("#1a6ecc", "#434348", "#90ed7d"),
+    chart = list(
+      backgroundColor = "transparent",
+      style = list(fontFamily = "Source Sans Pro")
+    ),
+    xAxis = list(
+      gridLineWidth = 1
+    )
+  )
+
+```
+# INICIO
+
+## Column {.tabset data-width="100%"}
+
+### INICIO
+<img src="./www/data/SEI_FA_CAEM.png" alt="SEI_FA_CAEM" width="100%">
+
+### SOBRE EL PROYECTO
+<p>Este proyecto, "Apoyo a la Implementación de Paisajes Rurales Climáticamente Inteligentes en Colombia", emprende una iniciativa científica integral para comprender y anticipar los profundos impactos del cambio climático en los recursos hídricos a lo largo de seis regiones vitales: Boyacá-Santander, Caribe-Occidental, Caribe-Oriental, Cauca-Nariño, Meta-Vichada y Tolima-Huila.</p>
+<p>Nuestro trabajo es un testimonio de metodologías de vanguardia y modelado integrado, diseñado para empoderar a los tomadores de decisiones con información sólida para un futuro resiliente. Nos hemos sumergido profundamente en la intrincada dinámica del agua, tanto superficial como subterránea, para ofrecer una imagen clara de los desafíos y oportunidades hasta el año 2050.</p>
+
+<h2>Lo Que Hicimos: Desvelando el Futuro del Agua</h2>
+<p>Nuestro enfoque fue meticulosamente estructurado, combinando diversas fuentes de datos y herramientas analíticas avanzadas:</p>
+
+<h3>1. Construyendo los Cimientos: Datos Hidroclimáticos y Herramientas de Modelado Avanzado</h3>
+<ul>
+    <li>Comenzamos reuniendo y depurando minuciosamente datos hidroclimáticos, integrando observaciones de estaciones locales con productos satelitales y de reanálisis de última generación (como CHIRPS, MSWEP y MSWX). Esto nos permitió superar la escasez de datos y asegurar una alta resolución espacial y temporal para la precipitación y la temperatura.</li>
+    <li>La evapotranspiración, un componente crucial del balance hídrico, se estimó con precisión utilizando métodos como Hargreaves-Samani y Penman-Monteith, mejorados por técnicas avanzadas de fusión de datos (RF-MEP).</li>
+    <li>Para las simulaciones hidrológicas, seleccionamos **WEAP (Water Evaluation And Planning)**, una plataforma de modelado integrada y robusta. Esta elección fue estratégica, permitiéndonos representar las complejas interacciones entre los procesos hidrológicos naturales y las actividades humanas dentro de las cuencas, incluyendo las operaciones de infraestructura y las diversas demandas de agua.</li>
+</ul>
+
+<h3>2. Caracterizando el Presente: Líneas Base Hidroclimáticas e Hidrogeológicas</h3>
+<ul>
+    <li>Realizamos una caracterización exhaustiva de los patrones hidroclimáticos de la región Tolima-Huila, analizando datos de precipitación, temperatura y caudal. Esto implicó un riguroso control de calidad, detección de valores atípicos y análisis de homogeneidad para establecer líneas base históricas fiables (1982-2022).</li>
+    <li>Simultáneamente, mapeamos y clasificamos los sistemas hidrogeológicos de la región basándonos en estándares internacionales, identificando los tipos clave de acuíferos (intergranulares, fracturados y de recursos limitados) y sus dinámicas de flujo inherentes. Esto proporcionó una comprensión crucial del potencial de las aguas subterráneas y su interacción con las aguas superficiales.</li>
+</ul>
+
+<h3>3. Simulando el Pasado: Desarrollo y Validación del Modelo Hidrológico</h3>
+<ul>
+    <li>Utilizando el "Método de Humedad del Suelo" de WEAP, desarrollamos modelos hidrológicos para cada región, integrando datos de cuencas, municipios, tipos de suelo y coberturas terrestres, permitiendo una simulación altamente detallada del movimiento del agua.</li>
+    <li>Nuestros modelos se sometieron a rigurosos procesos de calibración y validación (utilizando algoritmos como DDS y métricas como KGE) contra datos históricos de caudal. Esto aseguró que los modelos representaran con precisión el comportamiento hidrológico del mundo real, brindando confianza en sus capacidades predictivas.</li>
+    <li>También cuantificamos la demanda histórica de agua en sectores clave: agricultura (identificando el consumo de agua específico por cultivo y la eficiencia del riego), pecuario (considerando las necesidades de agua de los animales) y agua potable (reflejando el crecimiento de la población y la expansión urbana).</li>
+    <li>Se calcularon indicadores clave del agua como el **Índice de Regulación y Retención Hídrica (IRH)**, el **Índice de Uso del Agua (IUA)** y el **Índice de Vulnerabilidad al Desabastecimiento Hídrico (IVH)** para el período histórico, ofreciendo una evaluación de referencia del estrés hídrico y la salud de los ecosistemas.</li>
+</ul>
+
+<h3>4. Proyectando el Futuro: Escenarios de Cambio Climático y Análisis de Impactos</h3>
+<ul>
+    <li>Aprovechando las proyecciones del **Sexto Informe de Evaluación del IPCC (AR6-IPCC)**, específicamente los escenarios SSP2-4.5 (emisiones moderadas) y SSP5-8.5 (emisiones altas) para el período 2040-2070, generamos los insumos climáticos futuros (precipitación y temperatura) para nuestros modelos hidrológicos.</li>
+    <li>Estos escenarios climáticos futuros se incorporaron en los modelos WEAP calibrados para simular sus impactos en la disponibilidad y demanda de agua. Analizamos los cambios proyectados en la **Oferta Hídrica Total Superficial (OHTS)**, y el comportamiento futuro del IRH, IUA y IVH.</li>
+    <li>Para una visión holística, integramos los conocimientos del **modelo DynQual** para evaluar la calidad del agua bajo diferentes condiciones hidroclimáticas, incluyendo el impacto de contaminantes (como coliformes fecales, DBO y sólidos suspendidos) en los índices de calidad del agua.</li>
+    <li>Un elemento crítico fue el análisis de la **dinámica de las aguas subterráneas**: analizamos datos satelitales (GRACE-GLDAS) para identificar anomalías en las aguas subterráneas y calculamos las tasas de recarga potencial. Esto nos permitió comprender cómo el cambio climático podría afectar el almacenamiento y la disponibilidad de las aguas subterráneas.</li>
+</ul>
+
+<h3>5. Forjando Resiliencia: Proponiendo Medidas de Adaptación</h3>
+<ul>
+    <li>Basándonos en el análisis exhaustivo de las condiciones hídricas presentes y futuras, identificamos áreas críticas que enfrentan un aumento del estrés hídrico o la vulnerabilidad.</li>
+    <li>Para estas áreas, propusimos medidas de adaptación específicas, que incluyen:
+        <ul>
+            <li>**Recarga Artificial de Acuíferos (RAA):** Técnicas para reponer intencionalmente las reservas de agua subterránea, utilizando el excedente de agua superficial para amortiguar los períodos secos.</li>
+            <li>**Uso Eficiente de Aguas Subterráneas Someras:** Promover la explotación sostenible de acuíferos poco profundos y la construcción de sistemas locales de recolección de agua (por ejemplo, aljibes o pozos).</li>
+            <li>**Gestión de la Intrusión Salina:** Estrategias específicas para las regiones costeras para proteger los acuíferos de agua dulce de la contaminación por agua salada debido al aumento del nivel del mar y la sobreexplotación.</li>
+            <li>**Uso Eficiente del Agua Agrícola:** Implementación de técnicas de riego avanzadas, diversificación de cultivos y mejores prácticas de gestión del agua para reducir la demanda de agua en la agricultura.</li>
+            <li>**Explotación de Medios Fracturados:** Explorar el potencial del agua almacenada en formaciones rocosas fracturadas como una fuente de agua confiable, especialmente en áreas con disminución de las aguas superficiales.</li>
+        </ul>
+    </li>
+    <li>Nuestras recomendaciones también enfatizan la importancia de la gobernanza, el desarrollo de capacidades y el monitoreo continuo para asegurar que estas estrategias de adaptación sean efectivas y sostenibles.</li>
+</ul>
+<p>Esta investigación pionera es un recurso vital para la planificación regional, la priorización de inversiones y el desarrollo de estrategias de adaptación para construir resiliencia climática en el sector hídrico de Colombia. Es un paso proactivo para salvaguardar este recurso invaluable para las comunidades y los ecosistemas en un clima cambiante.</p>
+
+# CARACTERIZACIÓN HIDROCLIMATOLÓGICA {data-navmenu="HIDROCLIMATOLOGÍA"}
+## Teoría {.tabset data-width="600"}
+Este apartado presenta la caracterización de las variables precipitación y evapotranspiración potencial y caudal. El informe final, detalla de igua manera la disponibilidad de otras variables en la región tales como humedad relativa, radiación solar, brillo solar y evaporación, que por su baja cantidad de registros no logran representar las condiciones de la zona de estudio y por tanto no fueron procesadas en términos de atípicos y calidad.
+
+La principal fuente de información hidroclimatológica medida in situ fue la red nacional de estaciones del [IDEAM](http://www.ideam.gov.co) En la **Figura 1** se presenta la localización de las estaciones climatológicas existentes en la región, donde el color verde claro representa a estaciones con solo registros de precipitación y el verde oscuro a aquellas con registros de precipitación y temperatura. Del mismo modo, la **Figura 2** representa la localización de las estaciones hidrológicas, donde el azul indica existencia de registros de caudal. 
+
+Las series de precipitación y temperatura fueron analizadas de manera individual y en los clústeres generados en la sección 1.3 (del informe final), mientras que las series de caudal se analizaron de forma individual. El análisis aplicado corresponde al de calidad de información hidroclimatológica, el cual incluyó siguió las siguientes etapas:
+
+1.	Análisis de disponibilidad. Se filtro las estaciones que tuvieran menos del 30 % de información faltante en su serie de tiempo en el periodo 1980-2022.
+2.	Análisis de datos atípicos. En donde se detectó la existencia de valores anómalos para la variable analizada, principalmente los datos que excedieran el umbral superior del método de análisis usado.
+3.	Análisis de homogeneidad. En donde se identificó mediante la prueba de Pettit la consistencia de las series en el periodo de análisis propuesto, y con esto identificar si el punto de inflexión de la serie de tiempo es significativo o no.
+En cuanto a la identificación de atípicos se partió de que estos valores son aquellos que se alejan significativamente de las demás observaciones en el mismo grupo de datos. Para la identificación de datos atípicos a nivel de estación se construyeron boxplots mensuales y se marcaron como valores atípicos aquellos que se encuentran por debajo de Q1-1.5RI y por encima de los valores de: Q3+1.5RI, siendo Q1 y Q3 los cuantiles 1 y 3, y RI el rango intercuartílico estimado como Q3-Q1.
+
+Cabe resaltar que los boxplots no proporcionan información sobre la distribución subyacente de los datos y ofrecen una detección algo arbitraria de valores atípicos, especialmente en distribuciones no normales (Kampstra, 2008), (Krzywinski, 2014). Por lo tanto, el que sea detectado no implica que corresponda a un dato fuera de lo normal.
+
+Para analizar la disponibilidad de información diaria de caudal se realizó el conteo de datos disponibles en cada uno de los días del periodo de análisis (ver **Figura 6**). Para la región existe una disponibilidad de entre 20 y 60 estaciones diarias. El menor número de estaciones se encuentra al final del periodo de análisis y durante cortos periodos de tiempo alrededor de los años 1998, 2002 y en el periodo 2012-2017 en los que se llega a tener menos de 40 estaciones disponibles.
+
+## Figuras {.tabset data-width="400"}
+### Figura 1. Localización estaciones climatológicas
+<img src="./www/data/climatologia/png/Figura1.png" alt="Figura 1" width="100%">
+
+### Figura 2. Localización estaciones hidrológicas
+<img src="./www/data/climatologia/png/Figura2.png" alt="Figura 2" width="100%">
+
+# PRECIPITACIÓN {data-navmenu="HIDROCLIMATOLOGÍA"}
+## Mapa {.tabset data-width="400"}
+### Mapa
+```{r}
+# --- Carga de Datos ---
+mapa_list               <- readRDS("./www/data/climatologia/historica/P/mapa_list.rds")
+mapa_df                 <- readRDS("./www/data/climatologia/historica/P/mapa_df.rds")
+datos_serie_tiempo_long <- readRDS("./www/data/climatologia/historica/P/datos_serie_tiempo_long.rds")
+
+# --- Definición de Rangos y Colores (Igual) ---
+breaks <- c(0.01, 268, 535, 803, 1071, 1338, 1606, 1874, 2142, 2409, 2678)
+labels <- c("[< 268)", "[268 - 535)", "[535 - 803)", "[803 - 1071)",
+            "[1071 - 1338)", "[1338 - 1606)", "[1606 - 1874)", "[1874 - 2142)",
+            "[2142 - 2409)", "[2409 <)")
+colores <- c("#ffffdb", "#edf9af", "#c9e6b8", "#7bcfba", "#44b4c2", "#1d91c0",
+             "#1f5fa4", "#243495", "#081b58", "#0002ff")
+dataClasses <- lapply(seq_along(labels), function(i) {
+  list(from = breaks[i], to = breaks[i+1], color = colores[i], name = labels[i])
+})
+
+# --- Creación del Gráfico del Mapa ---
+highchart() %>%
+  hc_chart(
+    userData = list(serieTiempo = datos_serie_tiempo_long)
+  ) %>%
+  hc_add_series_map(
+    map = mapa_list,
+    df = mapa_df,
+    name = "Promedio Total Anual Multianual",
+    value = "Promedio_Anual",
+    joinBy = "Name", 
+    dataLabels = list(enabled = FALSE),
+    tooltip = list(
+      valueDecimals = 1,
+      pointFormat = "{point.Name}: {point.value} mm/año" 
+    ),
+    events = list(
+      click = JS(
+        "function(event) {
+          var NameSeleccionada = event.point.Name;
+          var chart = event.point.series.chart;
+          var containerId = 'container_serie_tiempo_p';
+          var chartTitle = 'Serie de Tiempo de Precipitación para ' + NameSeleccionada;
+
+          console.log('--- Iniciando Click Handler (v3 - Object Adapter) ---');
+          console.log('Name Seleccionada:', NameSeleccionada);
+
+          var todosLosDatosObj; // Renombrado para claridad
+
+          try {
+            todosLosDatosObj = chart.options.chart.userData.serieTiempo;
+
+            // Verificar si es un objeto y tiene las columnas esperadas (como arrays)
+            if (typeof todosLosDatosObj !== 'object' || todosLosDatosObj === null || !Array.isArray(todosLosDatosObj.Name) || !Array.isArray(todosLosDatosObj.timestamp_ms) || !Array.isArray(todosLosDatosObj.Value)) {
+               throw new Error('userData.serieTiempo no es un objeto válido con arrays para Name, timestamp_ms, Value.');
+            }
+            console.log('Acceso a todosLosDatosObj (objeto columnar) exitoso.');
+
+          } catch (e) {
+            console.error('ERROR CRÍTICO: No se pudo acceder o validar el objeto todosLosDatosObj (serieTiempo).', e);
+             Highcharts.chart(containerId, {
+                title: { text: chartTitle }, subtitle: { text: 'Error fatal: No se pudieron localizar los datos internos (objeto).' }, series: []
+             });
+            return; // Detener
+          }
+
+          // --- Procesar el objeto columnar para obtener la serie de la Name seleccionada ---
+          var serieData = [];
+          try {
+            var nRows = todosLosDatosObj.Name.length; // Número total de 'filas'
+            for (var i = 0; i < nRows; i++) {
+              // Comparar Name (insensible al caso por seguridad)
+              if (todosLosDatosObj.Name[i] && NameSeleccionada && todosLosDatosObj.Name[i].toLowerCase() === NameSeleccionada.toLowerCase()) {
+                // Si coincide, tomar el timestamp y la precipitación de la misma posición (índice i)
+                var ts = todosLosDatosObj.timestamp_ms[i];
+                var val = todosLosDatosObj.Value[i];
+                // Añadir al array de datos del gráfico si son válidos
+                if (typeof ts === 'number' && typeof val === 'number') {
+                  serieData.push([ts, val]);
+                }
+              }
+            }
+
+            // Opcional: Ordenar por timestamp si no viene ordenado por defecto
+            serieData.sort(function(a, b) { return a[0] - b[0]; });
+
+          } catch (e) {
+             console.error('Error al procesar el objeto de datos columnar para extraer la serie:', e);
+             Highcharts.chart(containerId, {
+                title: { text: chartTitle }, subtitle: { text: 'Error: Ocurrió un problema al procesar los datos internos.' }, series: []
+             });
+             return; // Detener
+          }
+
+          console.log('Datos procesados para gráfico:', serieData.length, 'puntos.');
+
+          // --- Verificar si se generaron datos ---
+          if (serieData.length === 0) {
+            console.warn('No se encontraron/procesaron datos válidos para la Name:', NameSeleccionada);
+            Highcharts.chart(containerId, {
+              title: { text: chartTitle }, subtitle: { text: 'No hay datos de serie de tiempo disponibles para esta Name.' }, series: []
+            });
+            return;
+          }
+
+          console.log('Primer punto de datos para gráfico:', serieData[0]);
+
+          // --- Crear Gráfico ---
+          try {
+            Highcharts.chart(containerId, {
+              chart: { type: 'line', zoomType: 'x' },
+              title: { text: chartTitle },
+              subtitle: { text: 'Fuente: Datos Históricos [Clic y arrastra para hacer zoom]' },
+              xAxis: { type: 'datetime', title: { text: 'Fecha' } },
+              yAxis: { title: { text: 'Precipitación (mm)' } },
+              tooltip: { pointFormat: '{series.name}: <b>{point.y:.1f} mm</b><br/>', valueDecimals: 1, xDateFormat: '%Y-%m-%d' },
+              series: [{ name: NameSeleccionada, data: serieData, color: '#1a6ecc' }],
+              credits: { enabled: false }, exporting: { enabled: true }
+            });
+            console.log('Gráfico creado/actualizado.');
+          } catch (e) {
+            console.error('Error al crear/actualizar el gráfico:', e);
+            document.getElementById(containerId).innerHTML = 'Error al generar el gráfico: ' + e.message;
+          }
+        }"
+      ) # Fin de list(click = JS(...))
+    ) # Fin de events
+  ) %>% # Fin de hc_add_series_map
+  hc_colorAxis(dataClasses = dataClasses, type = "category") %>%
+  hc_mapNavigation(enabled = TRUE) %>%
+  hc_add_theme(thm) %>%
+  hc_title(text = "Precipitación Total Anual Multianual") %>%
+  hc_credits(enabled = TRUE, text = "Datos: IDEAM/SEI", href = "https://www.sei.org/centres/latinoamerica/")
+```
+## Serie de tiempo {data-width="600"}
+### Serie de tiempo
+<div id="container_serie_tiempo_p" style="height: 500px; width: 100%;"></div>
+
+# EVAPOTRANSPIRACIÓN {data-navmenu="HIDROCLIMATOLOGÍA"}
+## Mapa {.tabset data-width="400"}
+### Mapa
+```{r}
+# --- Carga de Datos ---
+mapa_list               <- readRDS("./www/data/climatologia/historica/ETp/mapa_list.rds")
+mapa_df                 <- readRDS("./www/data/climatologia/historica/ETp/mapa_df.rds")
+datos_serie_tiempo_long <- readRDS("./www/data/climatologia/historica/ETp/datos_serie_tiempo_long.rds")
+
+# --- Definición de Rangos y Colores (Igual) ---
+breaks <- c(1, 962, 1016, 1070, 1124, 1178, 1232, 1285, 1339, 1393, 3448)
+labels <- c("[< 962)", "[962 - 1016)", "[1016 - 1070)", "[1070 - 1124)",
+            "[1124 - 1178)", "[1178 - 1232)", "[1232 - 1285)",
+            "[1285 - 1339)", "[1339 - 1393)", "[1393 <)")
+
+colores <- c("#c2523c", "#d97529", "#eda813", "#f7d707", "#c6f700", "#35e300",
+             "#0ec441", "#1e9e84", "#166d8a", "#0c2f7a")
+
+dataClasses <- lapply(seq_along(labels), function(i) {
+  list(from = breaks[i], to = breaks[i+1], color = colores[i], name = labels[i])
+})
+
+# --- Creación del Gráfico del Mapa ---
+highchart() %>%
+  hc_chart(
+    userData = list(serieTiempo = datos_serie_tiempo_long)
+  ) %>%
+  hc_add_series_map(
+    map = mapa_list,
+    df = mapa_df,
+    name = "Promedio Total Anual Multianual",
+    value = "Promedio_Anual",
+    joinBy = "Name", 
+    dataLabels = list(enabled = FALSE),
+    tooltip = list(
+      valueDecimals = 1,
+      pointFormat = "{point.Name}: {point.value} mm/año" 
+    ),
+    events = list(
+      click = JS(
+        "function(event) {
+          var NameSeleccionada = event.point.Name;
+          var chart = event.point.series.chart;
+          var containerId = 'container_serie_tiempo_etp';
+          var chartTitle = 'Serie de Tiempo de Evapotranspiración para ' + NameSeleccionada;
+
+          console.log('--- Iniciando Click Handler (v3 - Object Adapter) ---');
+          console.log('Name Seleccionada:', NameSeleccionada);
+
+          var todosLosDatosObj; // Renombrado para claridad
+
+          try {
+            todosLosDatosObj = chart.options.chart.userData.serieTiempo;
+
+            // Verificar si es un objeto y tiene las columnas esperadas (como arrays)
+            if (typeof todosLosDatosObj !== 'object' || todosLosDatosObj === null || !Array.isArray(todosLosDatosObj.Name) || !Array.isArray(todosLosDatosObj.timestamp_ms) || !Array.isArray(todosLosDatosObj.Value)) {
+               throw new Error('userData.serieTiempo no es un objeto válido con arrays para Name, timestamp_ms, Value.');
+            }
+            console.log('Acceso a todosLosDatosObj (objeto columnar) exitoso.');
+
+          } catch (e) {
+            console.error('ERROR CRÍTICO: No se pudo acceder o validar el objeto todosLosDatosObj (serieTiempo).', e);
+             Highcharts.chart(containerId, {
+                title: { text: chartTitle }, subtitle: { text: 'Error fatal: No se pudieron localizar los datos internos (objeto).' }, series: []
+             });
+            return; // Detener
+          }
+
+          // --- Procesar el objeto columnar para obtener la serie de la Name seleccionada ---
+          var serieData = [];
+          try {
+            var nRows = todosLosDatosObj.Name.length; // Número total de 'filas'
+            for (var i = 0; i < nRows; i++) {
+              // Comparar Name (insensible al caso por seguridad)
+              if (todosLosDatosObj.Name[i] && NameSeleccionada && todosLosDatosObj.Name[i].toLowerCase() === NameSeleccionada.toLowerCase()) {
+                // Si coincide, tomar el timestamp y la precipitación de la misma posición (índice i)
+                var ts = todosLosDatosObj.timestamp_ms[i];
+                var val = todosLosDatosObj.Value[i];
+                // Añadir al array de datos del gráfico si son válidos
+                if (typeof ts === 'number' && typeof val === 'number') {
+                  serieData.push([ts, val]);
+                }
+              }
+            }
+
+            // Opcional: Ordenar por timestamp si no viene ordenado por defecto
+            serieData.sort(function(a, b) { return a[0] - b[0]; });
+
+          } catch (e) {
+             console.error('Error al procesar el objeto de datos columnar para extraer la serie:', e);
+             Highcharts.chart(containerId, {
+                title: { text: chartTitle }, subtitle: { text: 'Error: Ocurrió un problema al procesar los datos internos.' }, series: []
+             });
+             return; // Detener
+          }
+
+          console.log('Datos procesados para gráfico:', serieData.length, 'puntos.');
+
+          // --- Verificar si se generaron datos ---
+          if (serieData.length === 0) {
+            console.warn('No se encontraron/procesaron datos válidos para la Name:', NameSeleccionada);
+            Highcharts.chart(containerId, {
+              title: { text: chartTitle }, subtitle: { text: 'No hay datos de serie de tiempo disponibles para esta Name.' }, series: []
+            });
+            return;
+          }
+
+          console.log('Primer punto de datos para gráfico:', serieData[0]);
+
+          // --- Crear Gráfico ---
+          try {
+            Highcharts.chart(containerId, {
+              chart: { type: 'line', zoomType: 'x' },
+              title: { text: chartTitle },
+              subtitle: { text: 'Fuente: Datos Históricos [Clic y arrastra para hacer zoom]' },
+              xAxis: { type: 'datetime', title: { text: 'Fecha' } },
+              yAxis: { title: { text: 'Evapotranspiración (mm)' } },
+              tooltip: { pointFormat: '{series.name}: <b>{point.y:.1f} mm</b><br/>', valueDecimals: 1, xDateFormat: '%Y-%m-%d' },
+              series: [{ name: NameSeleccionada, data: serieData, color: '#1a6ecc' }],
+              credits: { enabled: false }, exporting: { enabled: true }
+            });
+            console.log('Gráfico creado/actualizado.');
+          } catch (e) {
+            console.error('Error al crear/actualizar el gráfico:', e);
+            document.getElementById(containerId).innerHTML = 'Error al generar el gráfico: ' + e.message;
+          }
+        }"
+      ) # Fin de list(click = JS(...))
+    ) # Fin de events
+  ) %>% # Fin de hc_add_series_map
+  hc_colorAxis(dataClasses = dataClasses, type = "category") %>%
+  hc_mapNavigation(enabled = TRUE) %>%
+  hc_add_theme(thm) %>%
+  hc_title(text = "Evapotranspiración Total Anual Multianual") %>%
+  hc_credits(enabled = TRUE, text = "Datos: IDEAM/SEI", href = "https://www.sei.org/centres/latinoamerica/")
+```
+## Serie de tiempo {data-width="600"}
+### Serie de tiempo
+<div id="container_serie_tiempo_etp" style="height: 500px; width: 100%;"></div>
+
+# CAUDALES {data-navmenu="HIDROCLIMATOLOGÍA"}
+## Teoría {.tabset data-width="600"}
+### Resultados Caudales
+La información de caudal obtenida a partir de las mediciones de nivel en cuerpos loticos es útil para caracterizar el comportamiento hidrológico de las corrientes al interior de la región Tolima-Huila. Adicionalmente, esta información es utilizada en modelación hidrológica para la calibración de los parámetros que definen los procesos modelados.
+Para esta variable no se siguió la clasificación en clústeres utilizada para las variables climáticas, dado que la dinámica espacial de esta depende de procesos hidrológicos y geomorfológicos. Sin embargo, la característica acumulativa de la variable permite su agrupación en rangos altitudinales en los que es posible diferenciar la magnitud y el comportamiento interanual de los caudales. Esta región con una variación en la elevación de entre 10 y 3500 msnm, se clasificó las estaciones en rangos de 500 msnm. Con un total de 7 rangos altitudinales, es evidente la variación en la magnitud de los caudales desde las elevaciones superior con caudales más bajos, hasta las menores elevaciones con caudales significativamente superiores (ver **Figura 3**). Adicionalmente, para los caudales medios se destaca que en la medida que se desciende se hace más evidente el régimen bimodal con picos de caudal en los periodos abril-mayo y octubre-noviembre.
+
+Para cada una de las estaciones hidrométricas disponibles en la región se construyeron diagramas de cajas y bigotes para caracterizar el comportamiento mensual multianual en metros cúbicos por segundo como se muestra en la **Figura 4**. Los gráficos generados para las demás estaciones se encuentran disponibles en el Anexo 9 del informe final.
+
+### Disponibilidad de información
+La disponibilidad de información referida a la cantidad y dispersión de los datos en las series de caudal requirió en primer lugar la estimación del número de datos faltantes en cada mes en cada una de las estaciones. En la **Figura 5** se representa la disponibilidad de información con base en la cantidad de faltantes que se tiene para cada mes de registro en el periodo de análisis para aproximadamente 80 estaciones hidrométricas.
+
+Para analizar la disponibilidad de información diaria de caudal se realizó el conteo de datos disponibles en cada uno de los días del periodo de análisis (ver **Figura 6**). Para la región existe una disponibilidad de entre 20 y 60 estaciones diarias. El menor número de estaciones se encuentra al final del periodo de análisis y durante cortos periodos de tiempo alrededor de los años 1998, 2002 y en el periodo 2012-2017 en los que se llega a tener menos de 40 estaciones disponibles.
+
+### Evaluación de datos atípicos
+Se contabilizó la cantidad de datos atípicos de caudal en cada mes y se estimó la mediana para cada uno de los grupos (bajos y altos). Para cada estación se generaron gráficos como el de la **Figura 7**, los cuales se encuentran disponibles en el Anexo 9.
+
+### Homogeneidad y tendencia de las series
+La prueba de Pettitt fue aplicada sobre cada una de las series mensuales de temperatura y adicionalmente, se calculó la media móvil en una ventana de 12 meses para verificar la existencia de alguna tendencia en las series. La **Figura 8** presenta el resultado de la prueba para una estaciones. Las figuras generadas para la totalidad de las estaciones se encuentran disponibles en el Anexo 9. 
+
+De esta manera para estación 23197130 perteneciente al río Santa Cruz se identificó un punto de cambio en el año 1999, con una reducción en la media para el periodo posterior este año de aproximadamente 0.54 m3/s respecto al periodo 1982-1999. 
+
+## Figuras {.tabset data-width="400"}
+### Figura 3. Caracterización de caudales mensuales multianuales en rangos altitudinales
+<img src="./www/data/climatologia/png/Figura3.png" alt="Figura 3" width="90%">
+
+### Figura 4. Caracterización del régimen mensual multianual de caudales
+<img src="./www/data/climatologia/png/Figura4.png" alt="Figura 4" width="90%">
+
+### Figura 5. Disponibilidad de información de caudales medios diarios
+<img src="./www/data/climatologia/png/Figura5.png" alt="Figura 5" width="90%">
+
+### Figura 6. Número de estaciones de caudal disponibles en el periodo de análisis
+<img src="./www/data/climatologia/png/Figura6.png" alt="Figura 6" width="90%">
+
+### Figura 7. Datos atípicos en la estación 23167010
+<img src="./www/data/climatologia/png/Figura7.png" alt="Figura 7" width="90%">
+
+### Figura 8. Resultados prueba de homogeneidad de Pettitt
+<img src="./www/data/climatologia/png/Figura8.png" alt="Figura 8" width="90%">
+
+# COBERTURAS {data-navmenu="SUELOS"}
+## Mapa {.tabset data-width="700"}
+### Coberturas de la Tierra
+```{r}
+# --- Carga de Datos ---
+mapa_list    <- readRDS("./www/data/coberturas/CorineLandCover/mapa_list.rds")
+mapa_df      <- readRDS("./www/data/coberturas/CorineLandCover/mapa_df.rds")
+data_classes <- readRDS("./www/data/coberturas/CorineLandCover/data_classes.rds")
+
+# --- Definición de Rangos y Colores ---
+breaks <- c(11, 12, 13, 14, 21, 22, 23, 24, 31, 32, 33, 41, 51, 100)
+labels <- c("Zonas urbanizadas",
+            "Zonas industriales o comerciales y redes de comunicación",
+            "Zonas de extracción mineras y escombreras",
+            "Zonas verdes artificializadas, no agrícolas",
+            "Cultivos transitorios",
+            "Cultivos permanentes",
+            "Pastos",
+            "Áreas agrícolas heterogéneas",
+            "Bosques",
+            "Áreas con vegetación herbácea y/o arbustiva",
+            "Áreas abiertas, sin o con poca vegetación",
+            "Áreas húmedas continentales",
+            "Aguas continentales")
+colores <- c("#f24e4e", "#fa776b", "#fc8e86", "#ffa6a6", "#dbcea2", "#e3daa1",
+             "#f0eba3", "#f7f7a1", "#95c491", "#b9e099", "#dfff9e", "#cfe4f0",
+             "#7e97bd")
+
+# --- Creación del Gráfico del Mapa ---
+highchart() %>%
+  hc_add_series_map(
+    map = mapa_list,
+    df = mapa_df,
+    name = "Coberturas de la Tierra",
+    value = "nivel_2",
+    joinBy = "uid",
+    dataLabels = list(enabled = FALSE),
+    tooltip = list(
+      pointFormat = '<b>{point.nivel_2_CAT}</b>'
+    ),
+    borderWidth = 0
+  ) %>%
+  hc_colorAxis(
+    dataClasses = data_classes
+  ) %>%
+  hc_mapNavigation(enabled = TRUE) %>%
+  hc_title(text = "Coberturas de la Tierra Metodología Corine Land Cover escala 1:100.000, periodo 2018") %>%
+  hc_legend(layout = "vertical", align = "right", verticalAlign = "middle",
+            title = list(text = "Tipos de Cobertura")) %>%
+  hc_credits(enabled = TRUE, text = "Datos: IDEAM", href = "http://www.ideam.gov.co/web/ecosistemas/coberturas-tierra/")
+```
+## Sunburs {.tabset data-width="300"}
+### Gráfico Sunburs
+```{r}
+# --- Carga de Datos ---
+datos_sunburst    <- readRDS("./www/data/coberturas/CorineLandCover/datos_sunburst.rds")
+
+# Crear el Gráfico Sunburs
+hchart(
+  datos_sunburst,
+  type = "sunburst",
+  hcaes(id = id, parent = parent, name = name, value = value, color = color)
+) %>%
+  hc_title(text = "Distribución de Coberturas de la Tierra para los Niveles 1 y 2") %>%
+  hc_tooltip(
+    pointFormat = "<b>{point.name}</b>: {point.value:.2f}%",
+    valueDecimals = 2
+  ) %>%
+  hc_plotOptions(
+    sunburst = list(
+      allowDrillToNode = TRUE,
+      borderWidth = 1,
+      borderColor = "white",
+      levels = list(
+        list(
+          level = 1,
+          colorByPoint = TRUE,
+          borderColor = "white",
+          borderWidth = 2,
+          dataLabels = list(
+            enabled = TRUE,
+            format = '{point.name}',
+            style = list(fontSize = '11px', textOutline = 'none', fontWeight = 'bold', color = 'black')
+          )
+        ),
+        list(
+          level = 2,
+          colorByPoint = TRUE,
+          borderColor = "white",
+          borderWidth = 1,
+          dataLabels = list(
+            enabled = TRUE,
+            format = '{point.name}',
+            rotationMode = 'parallel',
+            style = list(fontSize = '9px', textOutline = 'none', color = 'black')
+          )
+        )
+      )
+    )
+  ) %>%
+  hc_credits(enabled = FALSE)
+```
+
+# HISTÓRICO {data-navmenu="ÍNDICES"}
+
+## Column {.tabset data-width="400"}
+
+### IRH
+La estimación del IRH para la región Tolima-Huila se presenta en la <b>Figura 9</b>. Al lado izquierdo de la figura se puede ver la distribución espacial de las categorías obtenidas por el índice, los valores obtenidos para cada una se las cuencas se pueden ver en las etiquetas de cada polígono. En esta figura se evidencia la disminución de la regulación y retención en dirección suroriente – noroccidente, lo que coincide con el flujo natural de las corrientes de la región. En otras palabras, por lo general las cuencas con los mejores índices se ubica en las zonas altas y los índices más bajos en las zonas bajas. 
+En el costado derecho de la <b>Figura 9</b> se puede ver el porcentaje de las cuencas clasificadas por cada categoría del IRH, resaltándose que ninguna de las cuencas de la región Tolima – Huila clasificó con un IRH Muy alto. La mayoría de las cuencas (48%) se encuentran en el rango Moderado, seguido por el 47% de las cuencas en el rango Alto y un 5%. La mayoría de las cuencas con IRH Alto cubren áreas protegidas o páramos como el Parque Nacional Natural Nevado del Cocuy, Parque Nacional Natural Las Hermosillas y el páramo de Chili.
+
+### IUA
+Previo al cálculo del IUA se estimó el caudal ambiental (<b>Figura 10</b> izq) para cada una de las cuencas analizadas, esta variable se presenta en unidades de Hm3año-1 con el fin de hacerla comparable con las demás variables requeridas dentro del cálculo del IUA. Para la región Tolima - Huila el caudal ambiental varía entre 1 y 250 Hm3año-1, los valores más altos se observan hacia la zona suroccidental de la región, y los valores más bajos se tienen al norte de la cuenca del río Saldaña. Adicionalmente, se estimó la OHDS (<b>Figura 10</b> Der.) cuyo comportamiento espacial es similar al del caudal ambiental. Para la región Tolima – Huila, esta variable se presenta entre 0 y 266 Hm3año-1, es decir, que se encuentra más de 200 Hm3año-1 por encima de los máximos estimados para el caudal ambiental.
+
+El IUA para la región Tolima – Huila se muestran en la <b>Figura 11</b>.La categoría que predomina es el uso Muy Bajo, el cual representa el 70% del total de cuencas ubicadas principalmente en la parte occidental la región. El 25% de las cuencas se categorizó en el uso bajo, donde la mayoría de las cuencas se localizan en la parte media de la región. Es necesario resaltar, que se encontraron 4 cuencas en condición moderada de uso (5% del total), estas se localizan principalmente al norte de la región en la parte baja de la cuenca.
+
+Se observa que algunas cuencas tienen una demanda total muy baja en comparación con su OHDS, lo que sugiere un IUA bajo. Por ejemplo, las cuencas C01 a C05 tienen demandas totales muy bajas (entre 0.02 y 0.09) y OHDS relativamente altas (entre 27.70 y 149.34), lo que indica un IUA bajo. Por otro lado, cuencas como C29, C32, y C60 tienen demandas totales significativamente más altas (6.956, 7.056, y 2.963 respectivamente) en comparación con sus OHDS, lo que sugiere un IUA más alto y una mayor presión sobre los recursos hídricos. Un IUA bajo indica que la cuenca tiene una oferta hídrica suficiente para satisfacer la demanda actual, lo que es favorable para la gestión sostenible del agua. Un IUA alto sugiere que la cuenca está experimentando una alta presión sobre sus recursos hídricos, lo que podría llevar a problemas de escasez de agua y afectar la sostenibilidad a largo plazo.
+
+### IVH
+Los resultados del IVH para la región Tolima - Huila se presentan en la <b>Figura 12</b>. En general, en la región predomina una Baja vulnerabilidad al desabastecimiento para la condición base evaluada (44 cuencas - 57% del total), la siguiente categoría con mayor dominancia es Muy Baja con 30 cuencas (39%), y en categoría media se tienen 3 cuencas (4%). No se clasificaron cuencas con vulnerabilidad entre alta y muy alta. Lo anterior indica que en estas cuencas el uso del agua no ha superado la regulación-retención y la relación oferta-demanda en el periodo base, el IUA es predominantemente "Muy bajo" o "Bajo", combinado con un IRH "ALTA" o "MODERADA", lo que resulta en categorías de vulnerabilidad favorables.
+
+Las cuencas con vulnerabilidad "Muy baja" (57 presentan un IUA "Muy bajo" y un IRH "ALTA", lo que indica una baja presión sobre el recurso hídrico y una alta capacidad de regulación natural. Esto resulta en una vulnerabilidad muy baja al desabastecimiento. Por su parte, las cuencas con vulnerabilidad "Media" presentan: IUA "Bajo" con IRH "BAJA" (C61), IUA "Muy bajo" con IRH "BAJA" (C43 y C52). Aunque la presión sobre el recurso es baja, la capacidad de regulación hídrica es deficiente, lo que aumenta su vulnerabilidad.
+
+Espacialmente se puede identificar que las cuencas con vulnerabilidad "Muy baja" se concentran principalmente en la parte occidental de la región, las cuencas con vulnerabilidad "Baja" tienen una distribución más amplia, pero predominan en la zona central y oriental de la región. Finalmente, se identifica no existe una correlación significativa entre el tamaño de las cuencas y su vulnerabilidad hídrica, lo que sugiere que otros factores hidrogeológicos, climáticos y de uso del suelo son más determinantes.
+
+## Figuras {.tabset data-width="600"}
+### Figura 9. Índice de Retención y Regulación Hídrica
+<img src="./www/data/indices/historicos/IRH.png" alt="Figura 9" width="90%">
+
+### Figura 10. Caudal Ambiental
+<img src="./www/data/indices/historicos/IUA_a.png" alt="Figura 10" width="90%">
+
+### Figura 11. Índice del uso del agua
+<img src="./www/data/indices/historicos/IUA_b.png" alt="Figura 11" width="90%">
+
+### Figura 12. Índice de vulnerabilidad al desabastecimiento superficial
+<img src="./www/data/indices/historicos/IVH.png" alt="Figura 12" width="90%">
+
+# CAMBIO CLIMÁTICO {data-navmenu="ÍNDICES"}
+
+## Column {.tabset data-width="400"}
+
+### IRH
+La <b>Figura 13</b>, contiene información sobre el comportamiento del Índice de Regulación y Retención Hídrica (IRH) en distintas subcuencas bajo dos escenarios de cambio climático: SSP2-4.5 y SSP5-8.5. Los valores representan el cambio porcentual con respecto al escenario de referencia, donde valores positivos indican una mejora en la regulación y retención hídrica, mientras que valores negativos señalan un deterioro.
+
+### OHTS
+Continuando con la caracterización de la oferta hídrica, se introduce el Índice de Oferta Hídrica Total Superficial (OHTS). Este índice cuantifica el volumen total de agua superficial disponible en cada subcuenca. Representa la cantidad bruta de agua que fluye en ríos, arroyos y otros cuerpos de agua superficial, constituyendo la base del recurso hídrico disponible. Comprender la distribución espacial de este índice y cómo se modifica ante el cambio climático es esencial para evaluar el potencial hídrico de cada subcuenca y anticipar posibles déficits o excedentes en la oferta de agua. La <b>Figura 14</b>, ilustra el cambio porcentual de este índice, comparando escenarios de cambio climático con los valores de referencia. Un valor positivo y distante de cero señala una mejora notable del índice, mientras que un valor negativo indica un deterioro considerable. 
+
+### IUA
+La <b>Figura 15</b>, ilustra espacialmente el Índice de Uso del Agua (IUA) en las subcuencas. Los mapas de la columna izquierda presentan el IUA bajo el escenario de cambio climático SSP2-4.5, mientras que los de la columna derecha corresponden al escenario SSP5-8.5. En cuanto a las filas, la superior muestra el IUA para el percentil 5%, representando condiciones de uso de agua menos severas; la fila central para el percentil 50%, indicando un uso más probable; y la fila inferior para el percentil 95%, reflejando condiciones de uso de agua severas. A continuación, se destacarán los patrones espaciales más relevantes y las implicaciones del comportamiento del IUA en cada uno de estos escenarios de cambio climático para las condiciones indicadas.
+
+### IVH
+Finalmente, para complementar la visión de la dinámica hídrica, se introduce el índice de vulnerabilidad hídrica por desabastecimiento (IVH) desarrollado por el IDEAM. Este índice evalúa la susceptibilidad al desabastecimiento del agua superficial de cada unidad hidrográfica de análisis, considerando factores como el uso del agua (i.e., socioeconómicos) y la capacidad de regulación hídrica. Un alto índice de vulnerabilidad señala áreas donde los recursos hídricos son más frágiles y susceptibles al estrés, haciendo prioritario implementar medidas de adaptación y gestión (<b>Figura 16</b>). 
+
+## Figuras {.tabset data-width="600"}
+### Figura 13. Índice de regulación y retención hídrica (CC)
+<img src="./www/data/indices/cc/IRH.png" alt="Figura 13" width="90%">
+
+### Figura 14. Índice oferta hídrica total superficial (CC)
+<img src="./www/data/indices/cc/OHTS.png" alt="Figura 14" width="90%">
+
+### Figura 15. Índice de Uso del Agua (CC)
+<img src="./www/data/indices/cc/IUA.png" alt="Figura 15" width="90%">
+
+### Figura 16. Índice de vulnerabilidad hídrica por desabastecimiento (CC)
+<img src="./www/data/indices/cc/IVH.png" alt="Figura 16" width="90%">
+
+# CAMBIO CLIMÁTICO {data-navmenu="CAMBIO CLIMÁTICO"}
+
+## Column {.tabset data-width="400"}
+
+### Introducción
+Con el ánimo de comprender cómo la disponibilidad del agua en la región Tolima-Huila se puede ver afectada por diversos escenarios de cambio climático para el período 2040 – 2070, se evaluaron las condiciones climáticas resultantes de los Modelos de Circulación General (GCM por sus siglas en inglés) del Sexto Informe de Evaluación del Panel Intergubernamental de Cambio Climático (AR6-IPCC por sus siglas en inglés). En particular, se consideraron los GCM que cuentan con información de precipitación y temperaturas media, mínima y máxima, además de estar disponibles para los cuatro escenarios prioritarios del AR6-IPCC (SSP 1-2.6, SSP 2-4.5, SSP 3-7.0 y SSP 5-8.5), como se presentó en Producto B2 de esta consultoría, resultando en un total de 20 GCM y 4 escenarios SSP.
+
+En esta sección se presentan los resultados de las proyecciones climáticas para la región Tolima-Huila a partir de los GCM, la representatividad local de los GCM y la priorización de estos para la definición de los ensambles hidrológicos.
+
+### Proyecciones climáticas
+Las <b>Figura 17</b> a <b>Figura 20</b> muestran la distribución espacial de los cambios promedio en precipitación, temperatura media, mínima y máxima. Los cambios en precipitación en el escenario SSP 1-2.6, si bien muestra un promedio de +0.6 %, la zona sur muestra cambios mayores (aumento menor a 5 %) que en el resto de la región (cambio menor a 2.5 %). Este patrón se mantiene en los otros escenarios, sin embargo, tiende a cambios más negativos para los escenarios más pesimistas. En cuanto a las temperaturas, en el escenario SSP 1-2.6 tiende a haber un cambio homogéneo a lo largo de la región, pero para los escenarios más pesimistas, los cambios se acentúan hacia el este. En este sentido, las proyecciones indican que el este de la región presentaría condiciones más adversas asociadas a una mayor disminución en la precipitación y mayor aumento en la temperatura.
+
+## Figuras {.tabset data-width="600"}
+### Figura 17. Cambio medio proyectado para la precipitación anual
+<img src="./www/data/cc/P.png" alt="Figura 13" width="90%">
+
+### Figura 18. Cambio medio proyectado para la temperatura media
+<img src="./www/data/cc/Tmed.png" alt="Figura 14" width="90%">
+
+### Figura 19. Cambio medio proyectado para la temperatura mínima
+<img src="./www/data/cc/Tmin.png" alt="Figura 14" width="90%">
+
+### Figura 120. Cambio medio proyectado para la temperatura máxima
+<img src="./www/data/cc/Tmax.png" alt="Figura 14" width="90%">
